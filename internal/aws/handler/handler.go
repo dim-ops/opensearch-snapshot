@@ -6,7 +6,9 @@ import (
 	"github.com/dim-ops/opensearch-snapshot/internal/config"
 	"github.com/dim-ops/opensearch-snapshot/internal/opensearch/snapshot"
 	"github.com/opensearch-project/opensearch-go"
+	"go.uber.org/fx"
 	"go.uber.org/zap"
+	"log"
 )
 
 func Handler(client *opensearch.Client, cfg *config.Config, log *zap.Logger) lambda.Handler {
@@ -31,6 +33,17 @@ func Handler(client *opensearch.Client, cfg *config.Config, log *zap.Logger) lam
 	})
 }
 
-func RegisterLambdaHandler(handler lambda.Handler) {
-	lambda.Start(handler)
+func RegisterLambdaHandler(lc fx.Lifecycle, s fx.Shutdowner, handler lambda.Handler) {
+	lc.Append(fx.Hook{
+		OnStart: func(ctx context.Context) error {
+			go lambda.StartWithOptions(
+				handler,
+				lambda.WithEnableSIGTERM(func() {
+					log.Println("shutdown from lambda handler")
+					s.Shutdown()
+				}),
+			)
+			return nil
+		},
+	})
 }
