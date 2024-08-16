@@ -1,0 +1,17 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Lambda to create opensearch snapshot
+Resources:
+  lambdaSnapshotOpensearch:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: go-lambda
+      Runtime: provided.al2
+      MemorySize: 128
+      CodeUri: .
+      Timeout: 30
+      Events:
+      Tracing: Active
+      # Environment:
+      #   Variables:
+      #     OTEL_EXPORTER_OTLP_INSECURE: true
