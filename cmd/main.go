@@ -13,6 +13,7 @@ func main() {
 	fx.New(
 		config.Module,
 		opensearch.Module,
+		handler.Module,
 		fx.Provide(
 			zap.NewProduction,
 		),

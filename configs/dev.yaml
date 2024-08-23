@@ -1,5 +1,5 @@
 opensearch:
-  address: https://<hostname>.amazonaws.com
-  role_arn: "arn:aws:iam::<accound_id>:role/<role_name>"
-  region: "<aws-region>"
-  bucket: "<bucket_name>"
+  address:
+  role_arn:
+  region:
+  bucket:

@@ -25,7 +25,7 @@ func CreateRepository(client *opensearch.Client, cfg *config.Config) error {
 		"type": "s3",
 		"settings": map[string]string{
 			"bucket":    cfg.Opensearch.Bucket,
-			"base_path": "snapshot-opensearch",
+			"base_path": snapshotRepository,
 			"region":    cfg.Opensearch.Region,
 			"role_arn":  cfg.Opensearch.RoleARN,
 		},

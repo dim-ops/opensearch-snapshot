@@ -2,35 +2,49 @@ package handler
 
 import (
 	"context"
+	"log"
 
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/dim-ops/opensearch-snapshot/internal/config"
 	"github.com/dim-ops/opensearch-snapshot/internal/opensearch/snapshot"
 	"github.com/opensearch-project/opensearch-go"
+	"go.uber.org/fx"
+	"go.uber.org/zap"
 )
 
-func Handler(client *opensearch.Client, cfg *config.Config) (string, error) {
-	err := snapshot.CreateRepository(client, cfg)
-	if err != nil {
-		//log.Error("Impossible to create repository snapshot", zap.Error(err))
-		return "KO", err
-	}
+func NewHandler(client *opensearch.Client, cfg *config.Config, log *zap.Logger) lambda.Handler {
+	return lambda.NewHandler(func(ctx context.Context) (string, error) {
+		err := snapshot.CreateRepository(client, cfg)
+		if err != nil {
+			log.Error("Impossible to create repository snapshot", zap.Error(err))
+			return "KO", err
+		}
 
-	//log.Info("Opensearch repository is created")
+		log.Info("Opensearch repository is created")
 
-	err = snapshot.CreateSnapshot(client)
-	if err != nil {
-		//log.Error("Impossible to create snapshot", zap.Error(err))
-		return "KO", err
-	}
+		err = snapshot.CreateSnapshot(client)
+		if err != nil {
+			log.Error("Impossible to create snapshot", zap.Error(err))
+			return "KO", err
+		}
 
-	//log.Info("Snapshot is triggered")
+		log.Info("Snapshot is triggered")
 
-	return "OK", nil
+		return "OK", nil
+	})
 }
 
-func RegisterLambdaHandler(client *opensearch.Client, cfg *config.Config) {
-	lambda.Start(func(ctx context.Context) (string, error) {
-		return Handler(client, cfg)
+func RegisterLambdaHandler(lc fx.Lifecycle, s fx.Shutdowner, handler lambda.Handler) {
+	lc.Append(fx.Hook{
+		OnStart: func(ctx context.Context) error {
+			go lambda.StartWithOptions(
+				handler,
+				lambda.WithEnableSIGTERM(func() {
+					log.Println("shutdown from lambda handler")
+					s.Shutdown()
+				}),
+			)
+			return nil
+		},
 	})
 }

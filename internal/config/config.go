@@ -2,7 +2,6 @@ package config
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/spf13/viper"
 	"go.uber.org/fx"
@@ -22,7 +21,7 @@ type OpenSearchConfig struct {
 func LoadConfig() (*Config, error) {
 	v := viper.New()
 
-	v.SetConfigName(os.Getenv("env"))
+	v.SetConfigName("dev")
 	v.SetConfigType("yaml")
 	v.AddConfigPath("./configs")
 
