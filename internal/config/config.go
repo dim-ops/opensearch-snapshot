@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/spf13/viper"
-	"go.uber.org/fx"
 )
 
 type Config struct {
@@ -12,10 +11,10 @@ type Config struct {
 }
 
 type OpenSearchConfig struct {
-	Address string
-	RoleARN string `mapstructure:"role_arn"`
-	Region  string
-	Bucket  string
+	Clusters []string `mapstructure:"clusters"`
+	RoleARN  string   `mapstructure:"role_arn"`
+	Region   string
+	Bucket   string
 }
 
 func LoadConfig() (*Config, error) {
@@ -37,7 +36,7 @@ func LoadConfig() (*Config, error) {
 	return &cfg, nil
 }
 
-func NewOpensearchConfig(lc fx.Lifecycle) (*Config, error) {
+func NewOpensearchConfig() (*Config, error) {
 	cfg, err := LoadConfig()
 	if err != nil {
 		return nil, err

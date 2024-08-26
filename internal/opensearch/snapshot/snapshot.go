@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/dim-ops/opensearch-snapshot/internal/config"
@@ -12,20 +13,13 @@ import (
 
 var snapshotRepository = "snapshot-" + time.Now().Local().Format("2006-01-02")
 
-type Snapshot interface {
-	CreateRepository(client *opensearch.Client, cfg *config.Config) error
-	CreateSnapshot(client *opensearch.Client) error
-}
-
-func CreateRepository(client *opensearch.Client, cfg *config.Config) error {
-
-	fmt.Println()
+func CreateRepository(i int, client *opensearch.Client, cfg *config.Config) error {
 
 	payload := map[string]interface{}{
 		"type": "s3",
 		"settings": map[string]string{
 			"bucket":    cfg.Opensearch.Bucket,
-			"base_path": snapshotRepository,
+			"base_path": snapshotRepository + strings.TrimPrefix(cfg.Opensearch.Clusters[i], "https://"),
 			"region":    cfg.Opensearch.Region,
 			"role_arn":  cfg.Opensearch.RoleARN,
 		},
