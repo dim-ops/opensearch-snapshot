@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/dim-ops/opensearch-snapshot/internal/config"
-	"github.com/opensearch-project/opensearch-go"
+	"github.com/opensearch-project/opensearch-go/v2"
 )
 
 var snapshotRepository = "snapshot-" + time.Now().Local().Format("2006-01-02")

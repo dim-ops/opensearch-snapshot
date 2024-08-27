@@ -8,7 +8,7 @@ import (
 	cfg "github.com/dim-ops/opensearch-snapshot/internal/config"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/opensearch-project/opensearch-go"
+	"github.com/opensearch-project/opensearch-go/v2"
 	requestsigner "github.com/opensearch-project/opensearch-go/v2/signer/awsv2"
 )
 

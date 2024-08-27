@@ -7,7 +7,7 @@ import (
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/dim-ops/opensearch-snapshot/internal/config"
 	"github.com/dim-ops/opensearch-snapshot/internal/opensearch/snapshot"
-	"github.com/opensearch-project/opensearch-go"
+	"github.com/opensearch-project/opensearch-go/v2"
 	"go.uber.org/fx"
 	"go.uber.org/zap"
 )
