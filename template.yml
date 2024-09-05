@@ -12,6 +12,6 @@ Resources:
       Timeout: 30
       Events:
       Tracing: Active
-      # Environment:
-      #   Variables:
-      #     OTEL_EXPORTER_OTLP_INSECURE: true
+      Environment:
+        Variables:
+          ENV: dev
