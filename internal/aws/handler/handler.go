@@ -2,7 +2,6 @@ package handler
 
 import (
 	"context"
-	"log"
 
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/dim-ops/opensearch-snapshot/internal/config"
@@ -37,16 +36,21 @@ func NewHandler(clients []*opensearch.Client, cfg *config.Config, log *zap.Logge
 	})
 }
 
-func RegisterLambdaHandler(lc fx.Lifecycle, s fx.Shutdowner, handler lambda.Handler) {
+func RegisterLambdaHandler(lc fx.Lifecycle, s fx.Shutdowner, handler lambda.Handler, logger *zap.Logger) {
 	lc.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error {
 			go lambda.StartWithOptions(
 				handler,
 				lambda.WithEnableSIGTERM(func() {
-					log.Println("shutdown from lambda handler")
+					logger.Info("Shutdown signal received from lambda handler")
 					s.Shutdown()
 				}),
 			)
+			logger.Info("Lambda handler registered and started")
+			return nil
+		},
+		OnStop: func(ctx context.Context) error {
+			logger.Info("Lambda handler stopping")
 			return nil
 		},
 	})

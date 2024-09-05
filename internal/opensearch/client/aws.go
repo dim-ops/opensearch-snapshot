@@ -8,10 +8,9 @@ import (
 	"github.com/aws/aws-sdk-go-v2/credentials/stscreds"
 	"github.com/aws/aws-sdk-go-v2/service/sts"
 	cfg "github.com/dim-ops/opensearch-snapshot/internal/config"
-	"go.uber.org/zap"
 )
 
-func NewAWSConfig(cfg *cfg.Config, log *zap.Logger) (aws.Config, error) {
+func NewAWSConfig(cfg *cfg.Config) (aws.Config, error) {
 	awsCfg, err := config.LoadDefaultConfig(context.TODO(), config.WithRegion(cfg.Opensearch.Region))
 	if err != nil {
 		return aws.Config{}, err

@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/spf13/viper"
+	"go.uber.org/zap"
 )
 
 type Config struct {
@@ -37,11 +38,12 @@ func LoadConfig() (*Config, error) {
 	return &cfg, nil
 }
 
-func NewOpensearchConfig() (*Config, error) {
+func NewOpensearchConfig(logger *zap.Logger) (*Config, error) {
 	cfg, err := LoadConfig()
 	if err != nil {
 		return nil, err
 	}
 
+	logger.Info("Config loaded successfully")
 	return cfg, nil
 }
