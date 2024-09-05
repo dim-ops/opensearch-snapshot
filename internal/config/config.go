@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/spf13/viper"
 )
@@ -13,14 +14,14 @@ type Config struct {
 type OpenSearchConfig struct {
 	Clusters []string `mapstructure:"clusters"`
 	RoleARN  string   `mapstructure:"role_arn"`
-	Region   string
-	Bucket   string
+	Region   string   `mapstructure:"region"`
+	Bucket   string   `mapstructure:"bucket"`
 }
 
 func LoadConfig() (*Config, error) {
 	v := viper.New()
 
-	v.SetConfigName("dev")
+	v.SetConfigName(os.Getenv("ENV"))
 	v.SetConfigType("yaml")
 	v.AddConfigPath("./configs")
 
